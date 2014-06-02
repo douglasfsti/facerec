@@ -31,6 +31,7 @@ __version__ = '0.02'
 import os
 import sys
 import cv2
+from time import sleep
 import serial
 import requests
 import argparse
@@ -42,6 +43,7 @@ NAMES = {}
 IMAGE_PATH = 'data/images'
 MODEL_FILE = 'data/model.mdl'
 CASCADE_FACE = 'data/haarcascade_frontalface_alt.xml'
+ARDUINO = serial.Serial('/dev/ttyACM0', 9600)
 
 
 class Facerec(Thread):
@@ -55,9 +57,12 @@ class Facerec(Thread):
         percent, name = prediction()
         if percent > 80:
             print 'You was identified, you shall pass.'
+            ARDUINO.write('1')
         else:
             print 'You wasn\'t identified. You shall not pass.'
         print 'Name: {0} | Accuracy level: {1}%'.format(name, percent)
+        sleep(5)
+        ARDUINO.write('2')
         print 'Press space to quit.'
 
 
